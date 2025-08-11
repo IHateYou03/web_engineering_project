@@ -16,7 +16,7 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme;
-  resolvedTheme: "dark" | "light"; // Aktuálisan alkalmazott téma (rendszer alapján is)
+  resolvedTheme: "dark" | "light";
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 };
