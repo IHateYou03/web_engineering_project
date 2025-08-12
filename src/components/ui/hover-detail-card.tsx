@@ -90,10 +90,10 @@ export function HoverDetailCard({
       scale: 1,
       transition: {
         type: "spring" as const,
-        stiffness: 300,
-        damping: 30,
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        stiffness: 20,
+        damping: 500,
+        staggerChildren: 10,
+        delayChildren: 10,
       },
     },
   };
@@ -119,7 +119,7 @@ export function HoverDetailCard({
         type: "spring" as const,
         stiffness: 400,
         damping: 28,
-        mass: 0.6,
+        mass: 2,
       },
     },
   };
@@ -174,7 +174,7 @@ export function HoverDetailCard({
           onHoverEnd={() => setIsHovered(false)}
           variants={shouldAnimate ? contentVariants : {}}
         >
-          <div className="grid grid-cols-5 gap-2 p-4">
+          <div className="grid grid-cols-5 gap-2 p-2">
             {images.slice(0, 10).map((src, index) => (
               <motion.div
                 key={index}
@@ -245,7 +245,7 @@ export function HoverDetailCard({
 
         {/* Bottom Content Section */}
         <motion.div className="p-2">
-          <motion.div className="flex items-center justify-between mb-3">
+          <motion.div className="flex items-center justify-between mb-2">
             <motion.div className="flex items-center gap-2">
               <motion.div
                 className={`${pills.left.color} ${pills.left.textColor} px-3 py-1 rounded-full text-sm font-medium`}
@@ -276,7 +276,7 @@ export function HoverDetailCard({
               )}
             </motion.div>
             <motion.div
-              className={`${pills.right.color} ${pills.right.textColor} px-3 py-1 rounded-full text-sm font-medium`}
+              className={`${pills.right.color} ${pills.right.textColor} px-5 py-1 rounded-full text-sm font-medium`}
               variants={shouldAnimate ? pillVariants : {}}
             >
               {pills.right.text}

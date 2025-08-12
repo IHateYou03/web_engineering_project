@@ -2,9 +2,9 @@ import "./App.css";
 import { ThemeProvider, useTheme } from "./components/theme_provider";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Monitor } from "lucide-react";
-import { useEffect } from "react";
+import { BrowserRouter } from "react-router";
+import Auth from "./pages/auth";
 import { SidebarDemo } from "./components/app_dashboard";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const CLIENT_ID =
   "4831a63cd36a17304c24e15c818879e212767a6ce0483a3e98d9dad8c37004a6";
@@ -13,10 +13,10 @@ const REDIRECT_URI =
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Router>
-        <SidebarDemo />
-      </Router>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <BrowserRouter>
+        <Auth />
+      </BrowserRouter>
     </ThemeProvider>
   );
 }
