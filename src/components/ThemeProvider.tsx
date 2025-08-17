@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createContext,
   useContext,
@@ -8,54 +10,44 @@ import {
 
 type Theme = "dark" | "light" | "system";
 
-type ThemeProviderProps = {
+interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
-};
+}
 
-type ThemeProviderState = {
+interface ThemeProviderState {
   theme: Theme;
-  resolvedTheme: "dark" | "light"; // Aktuálisan alkalmazott téma (rendszer alapján is)
+  resolvedTheme: "dark" | "light";
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
-};
+}
 
-const initialState: ThemeProviderState = {
-  theme: "system",
-  resolvedTheme: "light",
-  setTheme: () => null,
-  toggleTheme: () => null,
-};
-
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
+  undefined
+);
 
 export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "vite-ui-theme",
-  ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return defaultTheme;
-    const stored = localStorage.getItem(storageKey);
-    return stored ? (stored as Theme) : defaultTheme;
-  });
-
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
   const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">("light");
 
+  // Alkalmazza a class-t a <html>-re
   const applyTheme = useCallback((newTheme: Theme) => {
-    const root = window.document.documentElement;
+    if (typeof window === "undefined") return;
+
+    const root = document.documentElement;
     root.classList.remove("light", "dark");
 
     let actualTheme: "dark" | "light";
 
     if (newTheme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
+      actualTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
-      actualTheme = systemTheme;
     } else {
       actualTheme = newTheme;
     }
@@ -64,12 +56,18 @@ export function ThemeProvider({
     setResolvedTheme(actualTheme);
   }, []);
 
-  // Téma alkalmazása változáskor
+  // Első betöltéskor localStorage-ból vagy defaultTheme-ből
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme, applyTheme]);
+    if (typeof window === "undefined") return;
 
-  // Rendszer téma változásának figyelése
+    const stored = localStorage.getItem(storageKey) as Theme | null;
+    const initialTheme = stored || defaultTheme;
+
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
+  }, [applyTheme, defaultTheme, storageKey]);
+
+  // Rendszer téma változás figyelése csak system módban
   useEffect(() => {
     if (theme !== "system") return;
 
@@ -80,17 +78,20 @@ export function ThemeProvider({
     return () => mediaQuery.removeEventListener("change", listener);
   }, [theme, applyTheme]);
 
+  // Beállítás + mentés
   const handleSetTheme = (newTheme: Theme) => {
     localStorage.setItem(storageKey, newTheme);
     setTheme(newTheme);
+    applyTheme(newTheme);
   };
 
+  // Toggle dark/light (system-t kihagyva)
   const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
+    const newTheme = resolvedTheme === "dark" ? "light" : "dark";
     handleSetTheme(newTheme);
   };
 
-  const value = {
+  const value: ThemeProviderState = {
     theme,
     resolvedTheme,
     setTheme: handleSetTheme,
@@ -98,7 +99,7 @@ export function ThemeProvider({
   };
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext.Provider value={value}>
       {children}
     </ThemeProviderContext.Provider>
   );
@@ -106,10 +107,8 @@ export function ThemeProvider({
 
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
-
   if (!context) {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
-
   return context;
 };
