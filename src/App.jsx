@@ -7,7 +7,7 @@ import Auth from "./pages/auth";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/dev5">
       <Auth />
     </BrowserRouter>
   );

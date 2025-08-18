@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  builder:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm ci && npm run build"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
+  web:
+    image: nginx:alpine
+    depends_on:
+      - builder
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "127.0.10.5:8080:80"

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import DotGrid from "@/components/ui/DotGrid";
 import { useState } from "react";
 import { UserAuth } from "@/components/auth/AuthContext";

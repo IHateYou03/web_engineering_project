@@ -2,11 +2,16 @@ import { UserAuth } from "@/components/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
 import { useState } from "react";
+import { Calendar } from "@/components/ui/mini-calendar";
+import { Statcard } from "@/components/ui/stat-card";
+import { RecentWorkouts } from "@/components/ui/RecentWorkouts";
+import { PersonalRecords } from "@/components/ui/personalrecord";
 
 export default function dashboardPage() {
   const { session, signOutUser } = UserAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   console.log(session);
 
@@ -37,20 +42,23 @@ export default function dashboardPage() {
   };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h2>
-        {" "}
-        Welcome, {name} ({session?.user?.email})
-      </h2>
-      <div>
-        <p
-          onClick={handleSignOut}
-          className="hover:cursor-pointer  border inline-block px-4 py-3 mt-4 "
-        >
-          Sign out
-        </p>
+    <main className="flex-1 bg-neutral-900 rounded-tl-3xl p-8 overflow-auto">
+      <header className="mb-5">
+        <h1 className="text-5xl font-extrabold text-white mb- uppercase">
+          Welcome back, {name}!
+        </h1>
+        <p className="text-gray-400 text-lg">Track. Train. Transform.</p>
+      </header>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[minmax(300px,auto)]">
+        {/* Top row */}
+        <Statcard /> {/* Nutrition */}
+        <PersonalRecords /> {/* Personal Records */}
+        {/* Bottom row */}
+        <Calendar /> {/* Activity Tracker */}
+        <RecentWorkouts /> {/* Recent Workouts */}
       </div>
-    </div>
+    </main>
   );
 }

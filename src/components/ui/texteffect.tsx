@@ -140,7 +140,7 @@ const DigitalSerenity = () => {
     <>
       <style>{pageStyles}</style>
       <div className="text-slate-100 font-primary overflow-hidden relative bg-transparent">
-        <div className="relative z-10 w-full pt-10 pb-4">
+        <div className="relative z-10 w-full pb-10">
           <div className="flex justify-center w-full">
             <h1 className="text-4xl font-extralight tracking-tight text-slate-50 text-decoration-animate leading-tight text-center">
               <span className="word-animate" data-delay="0">

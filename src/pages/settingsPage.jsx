@@ -11,6 +11,43 @@ export default function SettingsPage() {
           ))}
         </div>
         <div className="flex gap-2 flex-1">
+          //
+          <div className="flex flex-wrap gap-3 justify-center w-full">
+            <HoverDetailCard
+              title="Workout1"
+              subtitle="52 tiles"
+              primaryButton={{
+                text: "Go to coldsdlection",
+                color: "bg-white/90",
+                hoverColor: "hover:bg-white",
+                textColor: "text-gray-900",
+              }}
+              secondaryButton={{
+                text: "Edit rules",
+                color: "bg-blue-600",
+                hoverColor: "hover:bg-blue-700",
+                textColor: "text-white",
+              }}
+              pills={{
+                left: {
+                  text: "1×1",
+                  color: "bg-blue-100",
+                  textColor: "text-blue-800",
+                },
+                sparkle: {
+                  show: true,
+                  color: "bg-purple-100 text-purple-800",
+                },
+                right: {
+                  text: "Published",
+                  color: "bg-green-100",
+                  textColor: "text-green-800",
+                },
+              }}
+              enableAnimations={true}
+              //
+            />
+          </div>
           {[...new Array(2)].map((_, i) => (
             <div
               key={"second-array" + i}

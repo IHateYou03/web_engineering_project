@@ -1,22 +1,44 @@
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/Sidebar";
-import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Settings, BicepsFlexed, Rss } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Routes, Route, useLocation } from "react-router-dom";
-
+import { supabase } from "@/supabaseClient";
 import DashboardPage from "@/pages/dashboardPage";
 import ProfilePage from "@/pages/profilePage";
 import SettingsPage from "@/pages/settingsPage";
 import WorkoutPage from "@/pages/workoutPage";
+import { UserAuth } from "./auth/AuthContext";
+import profilePicture from "./ui/profile.png";
 
 export function SidebarDemo() {
   const location = useLocation();
+  const [name, setName] = useState("");
+  const { session } = UserAuth();
+  const allowedRoutes = [
+    "/dashboard",
+    "/community",
+    "/settings",
+    "/workout",
+    "/profile",
+  ];
 
-  // Itt adod meg, hogy melyik route-okon látszódjon a sidebar
-  const allowedRoutes = ["/dashboard", "/profile", "/settings", "/workout"];
+  const fetchProfile = async () => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("name")
+      .eq("id", session.user.id)
+      .single();
 
-  // Ha nem allowed, akkor egyből visszaadunk null-t
+    if (error) {
+      console.error(error);
+    } else {
+      setName(data?.name ?? null);
+    }
+  };
+  fetchProfile();
+
   if (!allowedRoutes.includes(location.pathname)) {
     return null;
   }
@@ -29,24 +51,25 @@ export function SidebarDemo() {
       ),
     },
     {
-      label: "Profile",
-      to: "/profile",
+      label: "Community",
+      to: "/community",
       icon: (
-        <UserCog className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Settings",
-      to: "/settings",
-      icon: (
-        <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <Rss className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Workout",
       to: "/workout",
       icon: (
-        <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <BicepsFlexed className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+
+    {
+      label: "Settings",
+      to: "/settings",
+      icon: (
+        <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
@@ -70,11 +93,11 @@ export function SidebarDemo() {
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: name,
                 to: "#",
                 icon: (
                   <img
-                    src="https://assets.aceternity.com/manu.png"
+                    src={profilePicture}
                     className="h-7 w-7 flex-shrink-0 rounded-full"
                     alt="Avatar"
                     width={50}
@@ -102,8 +125,8 @@ export function SidebarDemo() {
 export const Logo = () => {
   return (
     <a
-      href="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+      href="dashboard"
+      className="font-normal flex space-x-3 items-center text-sm text-black py-1 relative z-20"
     >
       <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
       <motion.span
@@ -111,7 +134,7 @@ export const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium text-black dark:text-white whitespace-pre"
       >
-        Acet Labs
+        FitBoard
       </motion.span>
     </a>
   );
