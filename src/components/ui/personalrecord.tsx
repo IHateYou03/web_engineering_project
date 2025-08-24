@@ -21,9 +21,8 @@ export const PersonalRecords = () => {
   ];
 
   return (
-    <div className="w-full bg-[#252525] text-white p-3 shadow-xl rounded-3xl mt-0 mx-2">
-      <h2 className="text-lg font-semibold mb-3">Personal Records</h2>
-      <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+    <div className="w-full h-full bg-[#252525] text-white p-3 shadow-xl rounded-3xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
         {records.map((rec, i) => (
           <div
             key={i}

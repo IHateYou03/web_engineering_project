@@ -29,8 +29,8 @@ export const Statcard = () => {
   ];
 
   return (
-    <div className="w-[350px] bg-[#252525] text-white p-2.5 shadow-xl rounded-3xl mt-4 mx-4">
-      <div className="grid grid-cols-2 gap-3">
+    <div className="w-full h-full bg-[#252525] text-white p-2.5 shadow-xl rounded-3xl">
+      <div className="grid grid-cols-2 gap-3 h-full">
         {stats.map((item, i) => (
           <div
             key={i}

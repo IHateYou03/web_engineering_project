@@ -1,4 +1,3 @@
-"use client";
 import { cn } from "@/lib/utils";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -24,7 +23,7 @@ const SidebarContext = createContext<SidebarContextProps | undefined>(
 export const useSidebar = () => {
   const context = useContext(SidebarContext);
   if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider");
+    throw new Error("useSidebar must be used within SidebarProvider");
   }
   return context;
 };

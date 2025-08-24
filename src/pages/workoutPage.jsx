@@ -2,11 +2,11 @@ import DigitalSerenity from "@/components/ui/texteffect";
 import { Button } from "@/components/ui/button";
 import { BentoGrid } from "@/components/ui/bento-grid";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { supabase } from "@/supabaseClient";
 import { UserAuth } from "@/components/auth/AuthContext";
 import { BentoGridPrivate } from "@/components/ui/bento-grid_private";
+import { useState } from "react";
 import {
   Modal,
   ModalBody,
@@ -36,12 +36,12 @@ import {
 } from "@/components/ui/popover";
 
 export default function WorkoutPage() {
-  const [createOpen, setCreateOpen] = React.useState(false);
-  const [privateOpen, setPrivateOpen] = React.useState(false);
-  const [visibilityOpen, setVisibilityOpen] = React.useState(false);
-  const [visibilityValue, setVisibilityValue] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [error, setError] = React.useState(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [privateOpen, setPrivateOpen] = useState(false);
+  const [visibilityOpen, setVisibilityOpen] = useState(false);
+  const [visibilityValue, setVisibilityValue] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState(null);
 
   const { session } = UserAuth();
 
