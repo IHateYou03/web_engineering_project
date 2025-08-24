@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/Sidebar";
 import { LayoutDashboard, Settings, BicepsFlexed, Rss } from "lucide-react";
 import { motion } from "framer-motion";
@@ -6,38 +6,38 @@ import { cn } from "@/lib/utils";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
 import DashboardPage from "@/pages/dashboardPage";
-import ProfilePage from "@/pages/profilePage";
+import CommunityPage from "@/pages/communityPage";
 import SettingsPage from "@/pages/settingsPage";
 import WorkoutPage from "@/pages/workoutPage";
 import { UserAuth } from "./auth/AuthContext";
 import profilePicture from "./ui/profile.png";
+import { EditProfileDialog } from "./editProfileDialog";
 
 export function SidebarDemo() {
   const location = useLocation();
   const [name, setName] = useState("");
-  const { session } = UserAuth();
-  const allowedRoutes = [
-    "/dashboard",
-    "/community",
-    "/settings",
-    "/workout",
-    "/profile",
-  ];
+  const { session, signOutUser } = UserAuth();
+  const allowedRoutes = ["/dashboard", "/community", "/settings", "/workout"];
 
-  const fetchProfile = async () => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("name")
-      .eq("id", session.user.id)
-      .single();
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", session?.user?.id)
+        .single();
 
-    if (error) {
-      console.error(error);
-    } else {
-      setName(data?.name ?? null);
+      if (error) {
+        console.error(error);
+      } else {
+        setName(data?.name ?? "");
+      }
+    };
+
+    if (session?.user?.id) {
+      fetchProfile();
     }
-  };
-  fetchProfile();
+  }, [session]);
 
   if (!allowedRoutes.includes(location.pathname)) {
     return null;
@@ -64,7 +64,6 @@ export function SidebarDemo() {
         <BicepsFlexed className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-
     {
       label: "Settings",
       to: "/settings",
@@ -74,6 +73,7 @@ export function SidebarDemo() {
     },
   ];
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className={cn(
@@ -90,30 +90,19 @@ export function SidebarDemo() {
               ))}
             </div>
           </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: name,
-                to: "#",
-                icon: (
-                  <img
-                    src={profilePicture}
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    alt="Avatar"
-                    width={50}
-                    height={50}
-                  />
-                ),
-              }}
-            />
-          </div>
+
+          <EditProfileDialog
+            name={name}
+            profilePicture={profilePicture}
+            open={open}
+          />
         </SidebarBody>
       </Sidebar>
 
       <div className="flex flex-1">
         <Routes>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/community" element={<CommunityPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/workout" element={<WorkoutPage />} />
         </Routes>

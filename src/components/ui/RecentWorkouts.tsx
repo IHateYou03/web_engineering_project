@@ -23,7 +23,7 @@ export const RecentWorkouts = () => {
   ];
 
   return (
-    <div className="w-full bg-[#252525] text-white p-4.5 shadow-xl rounded-4xl mt-6 mx-2">
+    <div className="w-full bg-[#252525] text-white p-4.5 shadow-xl rounded-4xl">
       <h2 className="text-lg font-semibold mb-3">Your Recent Workouts</h2>
       <div className="flex flex-col gap-3">
         {workouts.map((item, i) => (

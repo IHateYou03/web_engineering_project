@@ -42,7 +42,7 @@ export const Calendar: React.FC = () => {
   });
 
   return (
-    <div className="w-full  mt-auto bg-[#252525] text-white p-5 shadow-lg rounded-4xl">
+    <div className="w-full h-full mt-auto bg-[#252525] text-white p-5 shadow-lg rounded-4xl">
       <div className="mb-0">
         <h2 className="text-lg font-semibold">Activity Tracking</h2>
         <p className="text-sm text-gray-400">
@@ -102,7 +102,7 @@ export const Calendar: React.FC = () => {
       </div>
 
       {/* Chart */}
-      <div className="h-25 mb-0">
+      <div className="h-80 mb-0">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <Line

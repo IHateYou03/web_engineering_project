@@ -1,63 +1,69 @@
 import { UserAuth } from "@/components/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/mini-calendar";
 import { Statcard } from "@/components/ui/stat-card";
 import { RecentWorkouts } from "@/components/ui/RecentWorkouts";
 import { PersonalRecords } from "@/components/ui/personalrecord";
+import Goals from "@/components/ui/goals_and_targets";
 
 export default function dashboardPage() {
-  const { session, signOutUser } = UserAuth();
-  const navigate = useNavigate();
+  const { session } = UserAuth();
   const [name, setName] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
   console.log(session);
 
-  const fetchProfile = async () => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("name")
-      .eq("id", session.user.id)
-      .single();
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!session) return;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", session.user.id)
+        .single();
 
-    if (error) {
-      console.error(error);
-      setError("Could not fetch profile.");
-    } else {
-      setName(data?.name ?? null);
-    }
-  };
-  fetchProfile();
+      if (error) {
+        console.error(error);
+        setError("Could not fetch profile.");
+      } else {
+        setName(data?.name ?? "");
+      }
+    };
 
-  const handleSignOut = async (e) => {
-    e.preventDefault();
-    try {
-      await signOutUser();
-      navigate("/");
-    } catch (error) {
-      setError("An unexpected error occurred.");
-    }
-  };
+    fetchProfile();
+  }, [session]);
 
   return (
-    <main className="flex-1 bg-neutral-900 rounded-tl-3xl p-8 overflow-auto">
-      <header className="mb-5">
-        <h1 className="text-5xl font-extrabold text-white mb- uppercase">
+    <main className="flex-1 bg-neutral-900 rounded-tl-4xl p-8 overflow-auto">
+      <header className="mb-12">
+        <h1 className="text-5xl font-extrabold text-white uppercase mb-2">
           Welcome back, {name}!
         </h1>
-        <p className="text-gray-400 text-lg">Track. Train. Transform.</p>
+        <p className="text-gray-400 text-lg">Train. Track. Repeat.</p>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[minmax(300px,auto)]">
-        {/* Top row */}
-        <Statcard /> {/* Nutrition */}
-        <PersonalRecords /> {/* Personal Records */}
-        {/* Bottom row */}
-        <Calendar /> {/* Activity Tracker */}
-        <RecentWorkouts /> {/* Recent Workouts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 auto-rows-[minmax(300px,auto)]">
+        <div className="flex flex-col gap-5">
+          <div className="flex gap-3 items-stretch">
+            <div className="flex-1">
+              <div className="h-[280px]">
+                <Statcard />
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="h-[280px]">
+                <PersonalRecords />
+              </div>
+            </div>
+          </div>
+          <Calendar /> {/* Activity Tracker */}
+        </div>
+
+        {/* Jobb oszlop */}
+        <div className="col-span-1 space-y-5">
+          <RecentWorkouts /> {/* Recent Workouts */}
+          <Goals /> {/* Goals & Targets */}
+        </div>
       </div>
     </main>
   );
